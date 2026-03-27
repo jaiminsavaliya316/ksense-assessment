@@ -149,38 +149,8 @@ The scoring spec contains **hidden Unicode RTL (right-to-left) override characte
 ## Scoring Logic
 
 Total Risk Score = BP Score + Temperature Score + Age Score
-
-### Blood Pressure
-
-| Stage | Criteria | Points |
-|-------|----------|--------|
-| Normal | Systolic < 120 AND Diastolic < 80 | 1 |
-| Elevated | Systolic 120–129 AND Diastolic < 80 | 2 |
-| Stage 1 | Systolic 130–139 OR Diastolic 80–89 | 3 |
-| Stage 2 | Systolic ≥ 140 OR Diastolic ≥ 90 | 4 |
-| Invalid/Missing | Either value is null | 0 |
-
-**When systolic and diastolic fall into different stages, the higher stage is used.** For example, systolic 125 (Elevated) + diastolic 85 (Stage 1) → Stage 1 (3 points).
-
+**When systolic and diastolic fall into different stages, the higher stage is used.** For example, systolic 125 (Elevated) + diastolic 85 (Stage 1) → Stage 1 (2 points).
 The "Elevated" category is special: it only applies when systolic is 120–129 **and** diastolic is below 80. If diastolic is 80 or above, the Elevated stage is cancelled and diastolic's stage wins instead.
-
----
-
-## Alert System
-
-Three alert lists are generated from the scored patient set (`src/lib/alerts.ts`):
-
-| Alert | Criteria |
-|-------|----------|
-| `high_risk_patients` | `totalScore >= 4` |
-| `fever_patients` | Temperature is a **valid number** AND `>= 99.6°F` |
-| `data_quality_issues` | Any field is missing or malformed (`hasDataQualityIssue === true`) |
-
-All lists are sorted alphabetically by patient ID before submission.
-
-**Note on fever alerts:** Patients with a null or unparseable temperature are placed only in `data_quality_issues` — not in `fever_patients`. A fever cannot be confirmed without a valid reading.
-
----
 
 ## Frontend Dashboard
 
